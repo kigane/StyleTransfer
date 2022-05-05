@@ -67,7 +67,7 @@ verbose: false              # if true, print more debugging information
 
 #------------------------------Train Options---------------------------------
 
-beta1: 0.5                  # momentum term of adam)
+beta1: 0.5                  # momentum term of adam
 continue_train: false       # continue training: load the latest model
 display_freq: 400           # frequency of showing training results on screen
 epoch_count: 1              # the starting epoch count
@@ -75,31 +75,30 @@ gan_mode: lsgan             # the type of GAN objective. [vanilla| lsgan | wgang
 identity: 0.5               # use identity mapping. Setting identity other than 1 has an effect of scaling the weight of the identity mapping loss. For example
 lambda_A: 10.0              # weight for cycle loss (A -> B -> A)
 lambda_B: 1.0               # weight for cycle loss (B -> A -> B)
-lambda_C: 0.0               # weight for vgg loss)
-lambda_E: 0                 # weight for eta related loss)
-lambda_GAN: 1.0             # weight for GAN Loss)
+lambda_C: 0.0               # weight for vgg loss
+lambda_E: 0                 # weight for eta related loss
+lambda_GAN: 1.0             # weight for GAN Loss
 lambda_identity: 0          # use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss. For example
-lr: 0.0002                  # initial learning rate for adam)
-lr_d: 4e-4                  # initial learning rate for adam)
-lr_decay_iters: 50          # multiply by a gamma every lr_decay_iters iterations
-lr_g: 1e-4                  # initial learning rate for adam)
+lr: 0.0002                  # initial learning rate for adam
+lr_g: 1e-4                  # initial learning rate for adam
+lr_d: 4e-4                  # initial learning rate for adam
 lr_policy: step             # learning rate policy. [linear | step | plateau | cosine]
-mix_rec: false              # if to mix the recon as generation)
+lr_decay_iters: 50          # multiply by a gamma every lr_decay_iters iterations
+mix_rec: false              # if to mix the recon as generation
 n_epochs: 50                # number of epochs with the initial learning rate
 n_epochs_decay: 150         # number of epochs to linearly decay learning rate to zero
-niter: 400                  # number of iter at starting learning rate)
+niter: 400                  # number of iter at starting learning rate
 niter_decay: 100            # number of iter to linearly decay learning rate to zero
-no_ganFeat_loss: false      # if specified
+no_ganFeat_loss: false      # if specified, do *not* use discriminator feature matching loss
 no_html: false              # do not save intermediate training results to [opt.checkpoints_dir]/[opt.name]/web/
 phase: train                # train
 pool_size: 50               # the size of image buffer that stores previously generated images
-pretrained_path: None       # specify the folder path to the pretrained weigths
+pretrained_path: None       # specify the folder path to the pretrained weights
 print_freq: 100             # frequency of showing training results on console
-rand_p: 0.5                 # above this value
-resume_state: false         # resume training from the given state file)
-save_by_iter: False         # whether saves model by iteration
+rand_p: 0.5                 # above this value, substitute
+resume_state: false         # resume training from the given state file
+save_by_iter: false         # whether saves model by iteration
 save_epoch_freq: 10         # frequency of saving checkpoints at the end of epochs
 save_latest_freq: 5000      # frequency of saving the latest results
-update_html_freq: 1000      # frequency of saving training results to html
 
 #----------------------------------------------------------------------------
