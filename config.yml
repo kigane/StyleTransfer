@@ -1,68 +1,50 @@
 #------------------------------Wandb Settings--------------------------------
 
+use_wandb: true             # if true, use wandb for recording
 project: StyleTransfer
 
 # run info, sweep时会忽略
-group: Resnet
+group: AODA
 job_type: train
-
-# 在wandb上记录数据集时保存的元数据
-dataset_name: garbage-raw # artifacts显示的名称
-dataset_type: Dataset     # artifacts分组名称
-dataset_desc: Raw garbage dataset # Notes，数据集的描述
-dataset_metadata: # artifacts Metadata栏显示的信息
-    num_classes: 6
-    train: 2024
-    test: 503
-
-# 在wandb上记录模型时保存的元数据
-model_name: resnet101
-model_type: Resnet
-model_desc: resnet101 + lr_cosine_annealing
-model_metadata:
-    use_BN: true
-    activation: relu
-    dropout: 0.5
 
 #------------------------------Base Options----------------------------------
 
-dataroot:                   #* path to images (should have subfolders trainA, trainB, valA, valB, etc)
-datarootA:                  #* path to images A
-datarootB:                  #* path to images B
-name: experiment_name       #* name of the experiment. It decides where to store samples and models
-gpu_ids: 0                  # gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU
+isTrain: true               # true when training
 checkpoints: ./checkpoints  # models are saved here
-model: aoda_gan             #* chooses which model to use. [classifier | aoda_gan | test ]
+dataroot:                   # path to images (should have subfolders trainA, trainB, valA, valB, etc)
+datarootA:                  # path to images A
+datarootB:                  # path to images B
+name: experiment_name       # name of the experiment. It decides where to store samples and models
+model: aoda_gan             # chooses which model to use. [classifier | aoda_gan | test ]
+n_classes: 0                # the number of labels for the dataset
+direction: AtoB             # AtoB or BtoA
+dataset_mode: unaligned     # chooses how datasets are loaded. [unaligned | aligned | single | colorization]
+batch_size: 1               # input batch size
+gpu_id: 0                   # 0 for GPU. -1 for CPU
 input_nc: 3                 # num of input image channels: 3 for RGB and 1 for grayscale
 output_nc: 3                # ditto
+no_dropout: true            # no dropout for the generator
+dropout: 0.0                # Dropout rate
+serial_batches: false       # if true, takes images in order to make batches, otherwise takes them randomly
+num_threads: 0              # num of threads for loading data, recommend windows 0, linux 4.
+load_size: 286              # scale images to this size
+crop_size: 256              # then crop to this size
+preprocess: resize_and_crop # [resize_and_crop | crop | scale_width | scale_width_and_crop | none]
+no_flip: false              # if true, do not flip the images for data augmentation
 nz: 8                       # num of gen filters in first conv layer
 ngf: 64                     # num of disc filters in the last conv layer
 ndf: 64                     # num of disc filters in the first conv layer
 ndisc_out_filters: 1        # num of disc filters in first conv layer
-netD: basic                 # specify discriminator architecture [basic | n_layers | pixel]. The basic model is a 70x70 PatchGAN. n_layers allows you to specify the layers in the discriminator
-netG: resnet_9blocks        # specify generator architecture [resnet_9blocks_c |resnet_9blocks | resnet_6blocks | unet_256 | unet_128]
-netGC: adaresnet_9blocks_c  # specify generator architecture [resnet_9blocks_c | unet_256_c | adaresnet_9blocks_c]
+netD: basic                 # [basic | n_layers | pixel]. The basic model is a 70x70 PatchGAN.
+netG: resnet_9blocks        # [resnet_9blocks_c |resnet_9blocks | resnet_6blocks | unet_256 | unet_128]
+netGC: adaresnet_9blocks_c  # [resnet_9blocks_c | unet_256_c | adaresnet_9blocks_c]
 n_layers_D: 3               # only used if netD==n_layers
 norm: instance              # instance normalization or batch normalization [instance | batch | none]
 init_type: normal           # network initialization [normal | xavier | kaiming | orthogonal]
 init_gain: 0.02             # scaling factor for normal, xavier and orthogonal.
-no_dropout: true            # no dropout for the generator
-dropout: 0.0                # Dropout rate
-dataset_mode: unaligned     #* chooses how datasets are loaded. [unaligned | aligned | single | colorization]
-direction: AtoB             #* AtoB or BtoA
-serial_batches: false       # if true, takes images in order to make batches, otherwise takes them randomly
-n_classes: 0                #* the number of labels for the dataset
-num_threads: 0              #* num of threads for loading data, recommend windows 0, linux 4.
-batch_size: 1               #* input batch size
-load_size: 286              # scale images to this size
-crop_size: 256              # then crop to this size
-max_dataset_size: .inf      # Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.
-preprocess: resize_and_crop # scaling and cropping of images at load time [resize_and_crop | crop | scale_width | scale_width_and_crop | none]
-no_flip: false              # if true, do not flip the images for data augmentation
-display_winsize: 256        #? display window size for both visdom and HTML
+max_dataset_size: .inf      # Maximum number of samples allowed per dataset.
 epoch: latest               # which epoch to load? set to latest to use latest cached model
 load_iter: 0                # which iteration to load? if load_iter > 0, the code will load models by iter_[load_iter]; otherwise, the code will load models by [epoch]
-use_wandb: true             # if true, use wandb for recording
 verbose: false              # if true, print more debugging information
 
 #------------------------------Train Options---------------------------------
@@ -71,14 +53,14 @@ beta1: 0.5                  # momentum term of adam
 continue_train: false       # continue training: load the latest model
 display_freq: 400           # frequency of showing training results on screen
 epoch_count: 1              # the starting epoch count
-gan_mode: lsgan             # the type of GAN objective. [vanilla| lsgan | wgangp]. vanilla GAN loss is the cross-entropy objective used in the original GAN paper.
-identity: 0.5               # use identity mapping. Setting identity other than 1 has an effect of scaling the weight of the identity mapping loss. For example
+gan_mode: lsgan             # [vanilla| lsgan | wgangp]. vanilla GAN loss is the cross-entropy objective 
+identity: 0.5               # use identity mapping. Setting identity other than 1 has an effect of scaling the weight of the identity mapping loss.
 lambda_A: 10.0              # weight for cycle loss (A -> B -> A)
 lambda_B: 1.0               # weight for cycle loss (B -> A -> B)
 lambda_C: 0.0               # weight for vgg loss
 lambda_E: 0                 # weight for eta related loss
 lambda_GAN: 1.0             # weight for GAN Loss
-lambda_identity: 0          # use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss. For example
+lambda_identity: 0          # use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss.
 lr: 0.0002                  # initial learning rate for adam
 lr_g: 1e-4                  # initial learning rate for adam
 lr_d: 4e-4                  # initial learning rate for adam
@@ -96,9 +78,9 @@ pool_size: 50               # the size of image buffer that stores previously ge
 pretrained_path: None       # specify the folder path to the pretrained weights
 print_freq: 100             # frequency of showing training results on console
 rand_p: 0.5                 # above this value, substitute
-resume_state: false         # resume training from the given state file
+resume_state:               # resume training from the given state file "path/to/latest.state"
 save_by_iter: false         # whether saves model by iteration
 save_epoch_freq: 10         # frequency of saving checkpoints at the end of epochs
 save_latest_freq: 5000      # frequency of saving the latest results
 
-#----------------------------------------------------------------------------
+#-------------------------------End------------------------------------------

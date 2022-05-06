@@ -1,9 +1,8 @@
 import wandb
 
-from utils import read_yaml
-
 #----------------------------------------------------------------------------
 
+#TODO
 def log_dataset(proj_name) -> None:
     """在wandb上记录数据集"""
     with wandb.init(project=proj_name, job_type="log_dataset") as run:
@@ -19,7 +18,7 @@ def log_dataset(proj_name) -> None:
         raw_data.add_dir('dataset')
         run.log_artifact(raw_data)
 
-
+#TODO
 def log_model(opt) -> None:
     """在wandb上记录模型"""
     model_artifact = wandb.Artifact(
@@ -34,24 +33,16 @@ def log_model(opt) -> None:
 #----------------------------------------------------------------------------
 
 class Visualizer():
-    def __init__(self, sweep: bool):
-        proj_info = read_yaml('project.yml')
-
-        if not sweep:
-            config = read_yaml('config.yml')
-            wandb.init(project=proj_info['project'],
-                    group=proj_info['group'],
-                    job_type=proj_info['job_type'],
-                    config=config)
-        else:
-            wandb.init()
-
+    def __init__(self, opt):
+        wandb.init(project=opt['project'],
+                    group=opt['group'],
+                    job_type=opt['job_type'],
+                    config=opt)
         self.opt = wandb.config
-        self.opt.update(proj_info)
-        
+
     def add_scalars(self, losses: dict, epoch: int):
         wandb.log(losses, step=epoch)
-    
+
     def add_summary(self, key, val):
         wandb.summary[key] = val
 

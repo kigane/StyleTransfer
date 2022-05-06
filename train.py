@@ -16,10 +16,13 @@ See frequently asked questions at: https://github.com/junyanz/pytorch-CycleGAN-a
 from argparse import Namespace
 
 from data import create_dataset
-
+from util.util import read_yaml
+from util.visualizer import Visualizer
 
 if __name__ == "__main__":
-    opt = Namespace()
+    config = read_yaml('config.yml')
+    # visualizer = Visualizer(config)
+    opt = Namespace(**config)
     dataset = create_dataset(opt)
     dataset_size = len(dataset)  # get the number of images in the dataset.
     print("The number of training images = %d" % dataset_size)
