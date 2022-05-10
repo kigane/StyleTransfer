@@ -39,7 +39,7 @@ class ImagePool():
         return_images = []
         for image in images:
             image = torch.unsqueeze(image.data, 0)
-            if self.num_imgs < self.pool_size:   # 缓存池未满，则将image存进去。image本身也直接返回。
+            if self.num_imgs < self.pool_size:   # 缓存池未满，则将image存进去。image本身也会直接返回。
                 self.num_imgs = self.num_imgs + 1
                 self.images.append(image)
                 return_images.append(image)

@@ -1,8 +1,6 @@
 # -----------------------------change class to idx----------------------------
 
 # for scribble only
-
-
 def scribble2idx(nake):
     cls_lst = ["pineapple", "strawberry", "basketball", "chicken", "cookie",
                "cupcake", "moon", "orange", "soccer", "watermelon"]
